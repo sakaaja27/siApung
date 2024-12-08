@@ -51,9 +51,12 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Daftar Pasien"/>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="daftar_pasienMouseClicked"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="200" y="640" width="-1" height="50"/>
+          <AbsoluteConstraints x="200" y="600" width="670" height="150"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -107,9 +110,12 @@
           <Image iconType="3" name="/assets/icon_humwhite.png"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="icon_hum1MouseClicked"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="900" y="610" width="60" height="110"/>
+          <AbsoluteConstraints x="890" y="610" width="80" height="140"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -229,9 +235,12 @@
           <Image iconType="3" name="/assets/icon_peoplewhite.png"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="icon_pasienMouseClicked"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="100" y="620" width="70" height="90"/>
+          <AbsoluteConstraints x="110" y="600" width="90" height="150"/>
         </Constraint>
       </Constraints>
     </Component>

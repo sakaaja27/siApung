@@ -7,6 +7,7 @@ package profile;
 import auth.splash;
 import dashboard.dashboard;
 import javax.swing.JFrame;
+import pasien.pasien;
 
 /**
  *
@@ -68,7 +69,12 @@ public class profile extends javax.swing.JFrame {
         daftar_pasien.setFont(new java.awt.Font("Trebuchet MS", 1, 32)); // NOI18N
         daftar_pasien.setForeground(new java.awt.Color(255, 255, 255));
         daftar_pasien.setText("Daftar Pasien");
-        getContentPane().add(daftar_pasien, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 640, -1, 50));
+        daftar_pasien.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                daftar_pasienMouseClicked(evt);
+            }
+        });
+        getContentPane().add(daftar_pasien, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 600, 670, 150));
 
         password.setFont(new java.awt.Font("Trebuchet MS", 1, 32)); // NOI18N
         password.setForeground(new java.awt.Color(255, 255, 255));
@@ -84,7 +90,12 @@ public class profile extends javax.swing.JFrame {
         getContentPane().add(icon_prof, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 20, -1, -1));
 
         icon_hum1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icon_humwhite.png"))); // NOI18N
-        getContentPane().add(icon_hum1, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 610, 60, 110));
+        icon_hum1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                icon_hum1MouseClicked(evt);
+            }
+        });
+        getContentPane().add(icon_hum1, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 610, 80, 140));
 
         icon_hum.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icon_humwhite.png"))); // NOI18N
         getContentPane().add(icon_hum, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 440, 70, 100));
@@ -125,7 +136,12 @@ public class profile extends javax.swing.JFrame {
         getContentPane().add(icon, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 230, -1, -1));
 
         icon_pasien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icon_peoplewhite.png"))); // NOI18N
-        getContentPane().add(icon_pasien, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 620, 70, 90));
+        icon_pasien.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                icon_pasienMouseClicked(evt);
+            }
+        });
+        getContentPane().add(icon_pasien, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 600, 90, 150));
 
         icon_people.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icon_userwhie.png"))); // NOI18N
         getContentPane().add(icon_people, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 287, 70, 90));
@@ -157,6 +173,24 @@ public class profile extends javax.swing.JFrame {
         this.dispose();
         front.setVisible(true);
     }//GEN-LAST:event_icon_signoutMouseClicked
+
+    private void daftar_pasienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_daftar_pasienMouseClicked
+        pasien daftarpasien = new pasien();
+        daftarpasien.setVisible(true); 
+        this.dispose(); 
+    }//GEN-LAST:event_daftar_pasienMouseClicked
+
+    private void icon_pasienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_icon_pasienMouseClicked
+         pasien daftarpasien = new pasien();
+        daftarpasien.setVisible(true); 
+        this.dispose(); 
+    }//GEN-LAST:event_icon_pasienMouseClicked
+
+    private void icon_hum1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_icon_hum1MouseClicked
+         pasien daftarpasien = new pasien();
+        daftarpasien.setVisible(true); 
+        this.dispose(); 
+    }//GEN-LAST:event_icon_hum1MouseClicked
 
     /**
      * @param args the command line arguments

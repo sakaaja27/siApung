@@ -238,7 +238,7 @@ public class pasien extends javax.swing.JFrame {
         tambah_act.setFont(new java.awt.Font("Nirmala UI", 1, 24)); // NOI18N
         tambah_act.setForeground(new java.awt.Color(255, 255, 255));
         tambah_act.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        tambah_act.setText("Tambah");
+        tambah_act.setText("Tambah Data");
         tambah_act.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tambah_actMouseClicked(evt);
@@ -343,95 +343,103 @@ public class pasien extends javax.swing.JFrame {
     }//GEN-LAST:event_icon_signoutMouseClicked
 
     private void simpan_btnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_simpan_btnMouseClicked
-        if (!isOnUpdate) {
-            try {
+        if (formValidation()) {
+            if (!isOnUpdate) {
+                try {
+                    if (!checkNIKLength()) {
+                        return;
+                    }
+                    String sql = "INSERT INTO pasien (no_antrian, nama_pasien, nik) VALUES (?, ?, ?)";
+                    PreparedStatement preparedStatement = DB.getConnection().prepareStatement(sql);
+
+                    String noAntrian = nomor_antrian_field.getText();
+                    String namaPasien = nama_pasien_field.getText();
+                    String nikPasien = nik_field.getText();
+
+                    preparedStatement.setString(1, noAntrian); // Set no_antrian
+                    preparedStatement.setString(2, namaPasien); // Set nama_pasien
+                    preparedStatement.setString(3, nikPasien); // Set nik
+                    int rowsInserted = preparedStatement.executeUpdate();
+                    if (rowsInserted > 0) {
+                        JOptionPane.showMessageDialog(null,
+                                "Data berhasil ditambahkan ke database!",
+                                "Sukses",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        clearForm();
+                        getPasien();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
                 if (!checkNIKLength()) {
                     return;
                 }
-                String sql = "INSERT INTO pasien (no_antrian, nama_pasien, nik) VALUES (?, ?, ?)";
-                PreparedStatement preparedStatement = DB.getConnection().prepareStatement(sql);
-
-                String noAntrian = nomor_antrian_field.getText();
+                String nomorAntrian = nomor_antrian_field.getText();
                 String namaPasien = nama_pasien_field.getText();
                 String nikPasien = nik_field.getText();
 
-                preparedStatement.setString(1, noAntrian); // Set no_antrian
-                preparedStatement.setString(2, namaPasien); // Set nama_pasien
-                preparedStatement.setString(3, nikPasien); // Set nik
-                int rowsInserted = preparedStatement.executeUpdate();
-                if (rowsInserted > 0) {
-                    JOptionPane.showMessageDialog(null,
-                            "Data berhasil ditambahkan ke database!",
-                            "Sukses",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    getPasien();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+                int confirm = JOptionPane.showConfirmDialog(null,
+                        "Apakah Anda yakin ingin mengubah data dengan No. Antrian " + nomorAntrian + "?",
+                        "Konfirmasi Perubahan",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
-        } else {
-            if (!checkNIKLength()) {
-                return;
-            }
-            String nomorAntrian = nomor_antrian_field.getText();
-            String namaPasien = nama_pasien_field.getText();
-            String nikPasien = nik_field.getText();
+                if (confirm == JOptionPane.YES_OPTION) {
+                    // Query untuk mengupdate data
+                    String sql = "UPDATE pasien SET nama_pasien = ?, nik = ? WHERE no_antrian = ?";
 
-            int confirm = JOptionPane.showConfirmDialog(null,
-                    "Apakah Anda yakin ingin mengubah data dengan No. Antrian " + nomorAntrian + "?",
-                    "Konfirmasi Perubahan",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                    try (PreparedStatement preparedStatement = DB.getConnection().prepareStatement(sql)) {
+                        // Set parameter untuk query
+                        preparedStatement.setString(1, namaPasien);
+                        preparedStatement.setString(2, nikPasien);
+                        preparedStatement.setString(3, nomorAntrian);
 
-            if (confirm == JOptionPane.YES_OPTION) {
-                // Query untuk mengupdate data
-                String sql = "UPDATE pasien SET nama_pasien = ?, nik = ? WHERE no_antrian = ?";
+                        // Eksekusi query untuk update data
+                        int rowsAffected = preparedStatement.executeUpdate();
 
-                try (PreparedStatement preparedStatement = DB.getConnection().prepareStatement(sql)) {
-                    // Set parameter untuk query
-                    preparedStatement.setString(1, namaPasien);
-                    preparedStatement.setString(2, nikPasien);
-                    preparedStatement.setString(3, nomorAntrian);
+                        if (rowsAffected > 0) {
+                            // Jika berhasil, tampilkan pesan sukses
+                            JOptionPane.showMessageDialog(null,
+                                    "Data dengan No. Antrian " + nomorAntrian + " telah diperbarui.",
+                                    "Sukses",
+                                    JOptionPane.INFORMATION_MESSAGE);
 
-                    // Eksekusi query untuk update data
-                    int rowsAffected = preparedStatement.executeUpdate();
+                            // Panggil method untuk memperbarui tampilan tabel atau data
+                            String tempNoAntrian = nomor_antrian_field.getText();
+                            getPasien();
+                            nomor_antrian_field.setText(tempNoAntrian);
 
-                    if (rowsAffected > 0) {
-                        // Jika berhasil, tampilkan pesan sukses
-                        JOptionPane.showMessageDialog(null,
-                                "Data dengan No. Antrian " + nomorAntrian + " telah diperbarui.",
-                                "Sukses",
-                                JOptionPane.INFORMATION_MESSAGE);
-
-                        // Panggil method untuk memperbarui tampilan tabel atau data
-                        String tempNoAntrian = nomor_antrian_field.getText();
-                        getPasien();
-                        nomor_antrian_field.setText(tempNoAntrian);
-
-                        // Clear form setelah update
+                            // Clear form setelah update
 //                        clearForm();
-                    } else {
-                        // Jika data tidak ditemukan atau update gagal
-                        JOptionPane.showMessageDialog(null,
-                                "Data dengan No. Antrian " + nomorAntrian + " tidak ditemukan.",
-                                "Gagal",
-                                JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            // Jika data tidak ditemukan atau update gagal
+                            JOptionPane.showMessageDialog(null,
+                                    "Data dengan No. Antrian " + nomorAntrian + " tidak ditemukan.",
+                                    "Gagal",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+
+                    } catch (SQLException e) {
+                        // Menangani error SQL
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Error saat mengupdate data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
-
-                } catch (SQLException e) {
-                    // Menangani error SQL
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error saat mengupdate data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    tblPasien.clearSelection();
+                } else {
+                    // Jika pengguna membatalkan perubahan
+                    JOptionPane.showMessageDialog(null,
+                            "Perubahan dibatalkan.",
+                            "Batal",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
-                tblPasien.clearSelection();
-            } else {
-                // Jika pengguna membatalkan perubahan
-                JOptionPane.showMessageDialog(null,
-                        "Perubahan dibatalkan.",
-                        "Batal",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
 
+            }
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "Mohon untuk mengisi form dengan lengkap!",
+                    "Tidak valid!",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_simpan_btnMouseClicked
 
@@ -447,14 +455,21 @@ public class pasien extends javax.swing.JFrame {
 
     private void hps_btnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hps_btnMouseClicked
         try {
+            if (!isOnUpdate) {
+                JOptionPane.showMessageDialog(null,
+                        "Belum memilih data untuk dihapus!",
+                        "Hapus data gagal!",
+                        JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
             String sql = "DELETE FROM pasien WHERE no_antrian = ?";
             PreparedStatement preparedStatement = DB.getConnection().prepareStatement(sql);
 
             String nomorAntrian = nomor_antrian_field.getText();
 
             int confirm = JOptionPane.showConfirmDialog(null,
-                    "Are you sure you want to delete data with No. Antrian " + nomorAntrian + "?",
-                    "Confirm Deletion",
+                    "Apakah kamu yakin ingin menghapus data dengan No. Antrian " + nomorAntrian + "?",
+                    "Konfirmasi Hapus!",
                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
             if (confirm == JOptionPane.YES_OPTION) {
@@ -506,6 +521,13 @@ public class pasien extends javax.swing.JFrame {
             nik_field.setText(null);
         }
     }//GEN-LAST:event_nik_fieldKeyReleased
+
+    private boolean formValidation() {
+        if (nomor_antrian_field.getText().isEmpty() || nik_field.getText().isEmpty() || nama_pasien_field.getText().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
 
     private boolean checkNIKLength() {
         if (nik_field.getText().length() > 16) {
