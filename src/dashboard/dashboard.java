@@ -45,7 +45,6 @@ public class dashboard extends javax.swing.JFrame {
         icon_profile = new javax.swing.JLabel();
         profile_txt = new javax.swing.JLabel();
         chart = new javax.swing.JPanel();
-        chartpasien = new raven.chart.CurveLineChart();
         pasien_side = new javax.swing.JLabel();
         icon_signout = new javax.swing.JLabel();
         signout_txt = new javax.swing.JLabel();
@@ -76,19 +75,16 @@ public class dashboard extends javax.swing.JFrame {
         getContentPane().add(icon, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 20, 200, 170));
 
         number_antrian_harian.setFont(new java.awt.Font("Trebuchet MS", 1, 64)); // NOI18N
-        number_antrian_harian.setForeground(new java.awt.Color(0, 0, 0));
         number_antrian_harian.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         number_antrian_harian.setText("99");
         getContentPane().add(number_antrian_harian, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 280, 80, 120));
 
         total_antri_hari_txt.setFont(new java.awt.Font("Trebuchet MS", 1, 24)); // NOI18N
-        total_antri_hari_txt.setForeground(new java.awt.Color(0, 0, 0));
         total_antri_hari_txt.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         total_antri_hari_txt.setText("Total Antrian hari ini");
         getContentPane().add(total_antri_hari_txt, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 240, 260, 50));
 
         total_seluruh_antrian_txt.setFont(new java.awt.Font("Trebuchet MS", 1, 24)); // NOI18N
-        total_seluruh_antrian_txt.setForeground(new java.awt.Color(0, 0, 0));
         total_seluruh_antrian_txt.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         total_seluruh_antrian_txt.setText("Total Seluruh Antrian");
         getContentPane().add(total_seluruh_antrian_txt, new org.netbeans.lib.awtextra.AbsoluteConstraints(1240, 240, 260, 50));
@@ -110,12 +106,6 @@ public class dashboard extends javax.swing.JFrame {
         chart.setBackground(new java.awt.Color(255, 255, 255));
         chart.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(177, 0, 7), 5));
         chart.setLayout(new java.awt.BorderLayout());
-
-        chartpasien.setBackground(new java.awt.Color(153, 0, 0));
-        chartpasien.setForeground(new java.awt.Color(204, 0, 0));
-        chartpasien.setFillColor(true);
-        chart.add(chartpasien, java.awt.BorderLayout.CENTER);
-
         getContentPane().add(chart, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 500, 1380, 430));
 
         pasien_side.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/grey_corner.png"))); // NOI18N
@@ -162,7 +152,6 @@ public class dashboard extends javax.swing.JFrame {
         getContentPane().add(icon_queue_harian, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 290, -1, -1));
 
         number_total.setFont(new java.awt.Font("Trebuchet MS", 1, 64)); // NOI18N
-        number_total.setForeground(new java.awt.Color(0, 0, 0));
         number_total.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         number_total.setText("99");
         getContentPane().add(number_total, new org.netbeans.lib.awtextra.AbsoluteConstraints(1270, 280, 80, 120));
@@ -290,7 +279,6 @@ public class dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel card_antrianhariini1;
     private javax.swing.JLabel card_total_antrian;
     private javax.swing.JPanel chart;
-    private raven.chart.CurveLineChart chartpasien;
     private javax.swing.JLabel daftarpasien_txt;
     private javax.swing.JLabel dashboard_txt;
     private javax.swing.JLabel dashboard_txt1;

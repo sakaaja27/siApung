@@ -4,14 +4,21 @@
  */
 package pasien;
 
+import DB_koneksi.DB;
 import auth.splash;
 import dashboard.dashboard;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.ScrollPane;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -22,6 +29,8 @@ public class pasien extends javax.swing.JFrame {
     /**
      * Creates new form pasien
      */
+    boolean isOnUpdate = false;
+
     public pasien() {
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,9 +40,62 @@ public class pasien extends javax.swing.JFrame {
         // Mengatur ukuran jendela
         this.setSize(1920, 1080); // Atur ukuran sesuai kebutuhan
         this.setLocationRelativeTo(null);
+        getPasien();
+        tambah_act.setVisible(false);
+        simpan_bgdark2.setVisible(false);
+    }
 
-        
+    public void getPasien() {
+        try {
+            String lastNoAntrian = "";
+            DefaultTableModel tblModel = new DefaultTableModel() {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            tblModel.addColumn("No. Antrian");
+            tblModel.addColumn("Nama Pasien");
+            tblModel.addColumn("NIK Pasien");
+            String sql = "SELECT * FROM pasien";
+            Statement statement = DB.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                String no_antrian = resultSet.getString("no_antrian");
+                String nama_pasien = resultSet.getString("nama_pasien");
+                String nik_pasien = resultSet.getString("nik");
+                tblModel.addRow(new Object[]{no_antrian, nama_pasien, nik_pasien});
+                lastNoAntrian = no_antrian;
+//                System.out.printf(": %s, Name: %s, Email: %s%n", no_antrian, nama_pasien, nik_pasien);
+            }
+            tblPasien.setModel(tblModel);
+            tblPasien.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    int selectedRow = tblPasien.getSelectedRow();
 
+                    if (selectedRow != -1) {
+                        String noAntrian = tblPasien.getValueAt(selectedRow, 0).toString();
+                        String namaPasien = tblPasien.getValueAt(selectedRow, 1).toString();
+                        String nikPasien = tblPasien.getValueAt(selectedRow, 2).toString();
+
+                        nomor_antrian_field.setText(noAntrian);
+                        nama_pasien_field.setText(namaPasien);
+                        nik_field.setText(nikPasien);
+                        simpan_btn.setText("Ubah");
+                        isOnUpdate = true;
+                        tambah_act.setVisible(true);
+                        simpan_bgdark2.setVisible(true);
+                    }
+                }
+            });
+            String[] splittedNoAntrian = lastNoAntrian.split("-");
+            System.out.println();
+            String incrementedNoAntrian = splittedNoAntrian[0] + "-" + String.valueOf(Integer.parseInt(splittedNoAntrian[1]) + 1);
+            nomor_antrian_field.setText(incrementedNoAntrian);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -49,8 +111,6 @@ public class pasien extends javax.swing.JFrame {
         nama_pasien = new javax.swing.JLabel();
         nik_txt = new javax.swing.JLabel();
         no_antrian_txt = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable = new javax.swing.JTable();
         nik_field = new javax.swing.JTextField();
         nama_pasien_field = new javax.swing.JTextField();
         nomor_antrian_field = new javax.swing.JTextField();
@@ -58,15 +118,19 @@ public class pasien extends javax.swing.JFrame {
         exit = new javax.swing.JLabel();
         namapasien_grey1 = new javax.swing.JLabel();
         antrian_grey1 = new javax.swing.JLabel();
-        hps_btn = new javax.swing.JLabel();
-        simpan_btn = new javax.swing.JLabel();
-        delete_bgdark = new javax.swing.JLabel();
-        simpan_bgdark = new javax.swing.JLabel();
         icon_signout = new javax.swing.JLabel();
         icon_home = new javax.swing.JLabel();
         navTop = new javax.swing.JPanel();
         sidepanel = new javax.swing.JPanel();
+        tambah_act = new javax.swing.JLabel();
+        simpan_bgdark2 = new javax.swing.JLabel();
+        simpan_btn = new javax.swing.JLabel();
+        simpan_bgdark = new javax.swing.JLabel();
+        hps_btn = new javax.swing.JLabel();
+        delete_bgdark = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblPasien = new rojerusan.RSTableMetro();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -96,59 +160,26 @@ public class pasien extends javax.swing.JFrame {
         no_antrian_txt.setText("Nomor Antrian");
         getContentPane().add(no_antrian_txt, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 190, 50));
 
-        jTable.setBackground(new java.awt.Color(250, 154, 156));
-        jTable.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
-        jTable.setForeground(new java.awt.Color(0, 0, 0));
-        jTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {" B01", "Saka", "1234567212"},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "No Antrian", "Nama Pasien", "NIK"
-            }
-        ));
-        // Mengatur header tabel
-        javax.swing.table.JTableHeader tableHeader = jTable.getTableHeader();
-        tableHeader.setFont(new java.awt.Font("Trebuchet MS", java.awt.Font.PLAIN, 24)); // Mengatur font header
-        tableHeader.setBackground(Color.BLACK);
-        tableHeader.setForeground(Color.BLACK);
-        jTable.setGridColor(new java.awt.Color(0, 0, 0));
-        jTable.setOpaque(false);
-        jTable.setRowHeight(40);
-        jTable.setRowHeight(40);
-        jTable.setSelectionBackground(new java.awt.Color(225, 232, 237));
-        jTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
-        jTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jTable.setShowGrid(true);
-        jTable.setUpdateSelectionOnSort(false);
-        jTable.setVerifyInputWhenFocusTarget(false);
-        jScrollPane1.setViewportView(jTable);
-        if (jTable.getColumnModel().getColumnCount() > 0) {
-            jTable.getColumnModel().getColumn(2).setResizable(false);
-        }
-
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 100, 1300, 880));
-
         nik_field.setBackground(new java.awt.Color(225, 232, 237));
         nik_field.setFont(new java.awt.Font("Trebuchet MS", 0, 24)); // NOI18N
-        nik_field.setForeground(new java.awt.Color(0, 0, 0));
         nik_field.setBorder(null);
+        nik_field.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nik_fieldKeyReleased(evt);
+            }
+        });
         getContentPane().add(nik_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 470, 430, 70));
 
         nama_pasien_field.setBackground(new java.awt.Color(225, 232, 237));
         nama_pasien_field.setFont(new java.awt.Font("Trebuchet MS", 0, 24)); // NOI18N
-        nama_pasien_field.setForeground(new java.awt.Color(0, 0, 0));
         nama_pasien_field.setBorder(null);
-        getContentPane().add(nama_pasien_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 310, 430, 70));
+        getContentPane().add(nama_pasien_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 310, 420, 70));
 
+        nomor_antrian_field.setEditable(false);
         nomor_antrian_field.setBackground(new java.awt.Color(225, 232, 237));
         nomor_antrian_field.setFont(new java.awt.Font("Trebuchet MS", 0, 24)); // NOI18N
-        nomor_antrian_field.setForeground(new java.awt.Color(0, 0, 0));
         nomor_antrian_field.setBorder(null);
-        getContentPane().add(nomor_antrian_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 150, 430, 70));
+        getContentPane().add(nomor_antrian_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 150, 420, 70));
 
         nik_grey.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/rectanglegrey.png"))); // NOI18N
         getContentPane().add(nik_grey, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 460, 460, 90));
@@ -169,24 +200,6 @@ public class pasien extends javax.swing.JFrame {
 
         antrian_grey1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/rectanglegrey.png"))); // NOI18N
         getContentPane().add(antrian_grey1, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 140, 460, 90));
-
-        hps_btn.setFont(new java.awt.Font("Trebuchet MS", 1, 24)); // NOI18N
-        hps_btn.setForeground(new java.awt.Color(255, 255, 255));
-        hps_btn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        hps_btn.setText("Hapus");
-        getContentPane().add(hps_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 620, 170, 50));
-
-        simpan_btn.setFont(new java.awt.Font("Trebuchet MS", 1, 24)); // NOI18N
-        simpan_btn.setForeground(new java.awt.Color(255, 255, 255));
-        simpan_btn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        simpan_btn.setText("Simpan");
-        getContentPane().add(simpan_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 620, 170, 50));
-
-        delete_bgdark.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/rectangledarkrey.png"))); // NOI18N
-        getContentPane().add(delete_bgdark, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 620, -1, 60));
-
-        simpan_bgdark.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/rectangledarkrey.png"))); // NOI18N
-        getContentPane().add(simpan_bgdark, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 620, -1, 60));
 
         icon_signout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icon_signout.png"))); // NOI18N
         icon_signout.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -221,11 +234,90 @@ public class pasien extends javax.swing.JFrame {
 
         sidepanel.setBackground(new java.awt.Color(217, 217, 217));
         sidepanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tambah_act.setFont(new java.awt.Font("Nirmala UI", 1, 24)); // NOI18N
+        tambah_act.setForeground(new java.awt.Color(255, 255, 255));
+        tambah_act.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tambah_act.setText("Tambah");
+        tambah_act.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tambah_actMouseClicked(evt);
+            }
+        });
+        sidepanel.add(tambah_act, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 610, 170, 40));
+
+        simpan_bgdark2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/rectangledarkrey.png"))); // NOI18N
+        sidepanel.add(simpan_bgdark2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 600, -1, 60));
+
+        simpan_btn.setFont(new java.awt.Font("Trebuchet MS", 1, 24)); // NOI18N
+        simpan_btn.setForeground(new java.awt.Color(255, 255, 255));
+        simpan_btn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        simpan_btn.setText("Simpan");
+        simpan_btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                simpan_btnMouseClicked(evt);
+            }
+        });
+        sidepanel.add(simpan_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 520, 170, 60));
+
+        simpan_bgdark.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/rectangledarkrey.png"))); // NOI18N
+        sidepanel.add(simpan_bgdark, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 520, -1, 60));
+
+        hps_btn.setFont(new java.awt.Font("Trebuchet MS", 1, 24)); // NOI18N
+        hps_btn.setForeground(new java.awt.Color(255, 255, 255));
+        hps_btn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        hps_btn.setText("Hapus");
+        hps_btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                hps_btnMouseClicked(evt);
+            }
+        });
+        sidepanel.add(hps_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 520, 170, 60));
+
+        delete_bgdark.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/rectangledarkrey.png"))); // NOI18N
+        sidepanel.add(delete_bgdark, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 520, -1, 60));
+
         getContentPane().add(sidepanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 530, 1020));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(1920, 100));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tblPasien.setBackground(new java.awt.Color(250, 154, 156));
+        tblPasien.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "No. Antrian", "Nama Pasien", "Nik"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblPasien.setColorBackgoundHead(new java.awt.Color(250, 154, 156));
+        tblPasien.setColorFilasBackgound2(new java.awt.Color(225, 232, 237));
+        tblPasien.setColorFilasForeground1(new java.awt.Color(0, 0, 0));
+        tblPasien.setColorFilasForeground2(new java.awt.Color(0, 0, 0));
+        tblPasien.setColorForegroundHead(new java.awt.Color(0, 0, 0));
+        tblPasien.setFuenteFilas(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        tblPasien.setFuenteFilasSelect(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        tblPasien.setFuenteHead(new java.awt.Font("Nirmala UI", 1, 15)); // NOI18N
+        tblPasien.setRowHeight(40);
+        jScrollPane2.setViewportView(tblPasien);
+        if (tblPasien.getColumnModel().getColumnCount() > 0) {
+            tblPasien.getColumnModel().getColumn(0).setResizable(false);
+            tblPasien.getColumnModel().getColumn(1).setResizable(false);
+            tblPasien.getColumnModel().getColumn(2).setResizable(false);
+        }
+
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 90, 1320, 910));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 1080));
 
         pack();
@@ -239,8 +331,8 @@ public class pasien extends javax.swing.JFrame {
     private void icon_homeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_icon_homeMouseClicked
         // TODO add your handling code here:
         dashboard dash = new dashboard();
-        dash.setVisible(true); 
-        this.dispose(); 
+        dash.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_icon_homeMouseClicked
 
     private void icon_signoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_icon_signoutMouseClicked
@@ -249,6 +341,188 @@ public class pasien extends javax.swing.JFrame {
         this.dispose();
         front.setVisible(true);
     }//GEN-LAST:event_icon_signoutMouseClicked
+
+    private void simpan_btnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_simpan_btnMouseClicked
+        if (!isOnUpdate) {
+            try {
+                if (!checkNIKLength()) {
+                    return;
+                }
+                String sql = "INSERT INTO pasien (no_antrian, nama_pasien, nik) VALUES (?, ?, ?)";
+                PreparedStatement preparedStatement = DB.getConnection().prepareStatement(sql);
+
+                String noAntrian = nomor_antrian_field.getText();
+                String namaPasien = nama_pasien_field.getText();
+                String nikPasien = nik_field.getText();
+
+                preparedStatement.setString(1, noAntrian); // Set no_antrian
+                preparedStatement.setString(2, namaPasien); // Set nama_pasien
+                preparedStatement.setString(3, nikPasien); // Set nik
+                int rowsInserted = preparedStatement.executeUpdate();
+                if (rowsInserted > 0) {
+                    JOptionPane.showMessageDialog(null,
+                            "Data berhasil ditambahkan ke database!",
+                            "Sukses",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    getPasien();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            if (!checkNIKLength()) {
+                return;
+            }
+            String nomorAntrian = nomor_antrian_field.getText();
+            String namaPasien = nama_pasien_field.getText();
+            String nikPasien = nik_field.getText();
+
+            int confirm = JOptionPane.showConfirmDialog(null,
+                    "Apakah Anda yakin ingin mengubah data dengan No. Antrian " + nomorAntrian + "?",
+                    "Konfirmasi Perubahan",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                // Query untuk mengupdate data
+                String sql = "UPDATE pasien SET nama_pasien = ?, nik = ? WHERE no_antrian = ?";
+
+                try (PreparedStatement preparedStatement = DB.getConnection().prepareStatement(sql)) {
+                    // Set parameter untuk query
+                    preparedStatement.setString(1, namaPasien);
+                    preparedStatement.setString(2, nikPasien);
+                    preparedStatement.setString(3, nomorAntrian);
+
+                    // Eksekusi query untuk update data
+                    int rowsAffected = preparedStatement.executeUpdate();
+
+                    if (rowsAffected > 0) {
+                        // Jika berhasil, tampilkan pesan sukses
+                        JOptionPane.showMessageDialog(null,
+                                "Data dengan No. Antrian " + nomorAntrian + " telah diperbarui.",
+                                "Sukses",
+                                JOptionPane.INFORMATION_MESSAGE);
+
+                        // Panggil method untuk memperbarui tampilan tabel atau data
+                        String tempNoAntrian = nomor_antrian_field.getText();
+                        getPasien();
+                        nomor_antrian_field.setText(tempNoAntrian);
+
+                        // Clear form setelah update
+//                        clearForm();
+                    } else {
+                        // Jika data tidak ditemukan atau update gagal
+                        JOptionPane.showMessageDialog(null,
+                                "Data dengan No. Antrian " + nomorAntrian + " tidak ditemukan.",
+                                "Gagal",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+
+                } catch (SQLException e) {
+                    // Menangani error SQL
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error saat mengupdate data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                tblPasien.clearSelection();
+            } else {
+                // Jika pengguna membatalkan perubahan
+                JOptionPane.showMessageDialog(null,
+                        "Perubahan dibatalkan.",
+                        "Batal",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        }
+    }//GEN-LAST:event_simpan_btnMouseClicked
+
+    private void tambah_actMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tambah_actMouseClicked
+        isOnUpdate = false;
+        simpan_btn.setText("Tambah");
+        tblPasien.clearSelection();
+        tambah_act.setVisible(false);
+        simpan_bgdark2.setVisible(false);
+        clearForm();
+        getPasien();
+    }//GEN-LAST:event_tambah_actMouseClicked
+
+    private void hps_btnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hps_btnMouseClicked
+        try {
+            String sql = "DELETE FROM pasien WHERE no_antrian = ?";
+            PreparedStatement preparedStatement = DB.getConnection().prepareStatement(sql);
+
+            String nomorAntrian = nomor_antrian_field.getText();
+
+            int confirm = JOptionPane.showConfirmDialog(null,
+                    "Are you sure you want to delete data with No. Antrian " + nomorAntrian + "?",
+                    "Confirm Deletion",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                // Proceed with deleting the data if confirmed
+                preparedStatement.setString(1, nomorAntrian);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+                if (rowsAffected > 0) {
+                    // Show success message
+                    JOptionPane.showMessageDialog(null,
+                            "Data dengan No. Antrian " + nomorAntrian + " telah dihapus dari database.",
+                            "Sukses",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                    isOnUpdate = false;
+                    simpan_btn.setText("Tambah");
+                    tblPasien.clearSelection();
+                    tambah_act.setVisible(false);
+                    simpan_bgdark2.setVisible(false);
+                    clearForm();
+                    getPasien();
+                }
+            } else {
+                // If the user clicked "No", show a cancellation message or do nothing
+                JOptionPane.showMessageDialog(null,
+                        "Penghapusan dibatalkan.",
+                        "Batal",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_hps_btnMouseClicked
+
+    public static boolean isValidInteger(String str) {
+        return str.matches("-?\\d+");
+    }
+
+    private void nik_fieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nik_fieldKeyReleased
+        if (isValidInteger(nik_field.getText())) {
+            if (nik_field.getText().length() > 16) {
+                nik_field.setText(nik_field.getText().substring(0, nik_field.getText().length() - 1));
+                JOptionPane.showMessageDialog(null,
+                        "NIK tidak boleh lebih dari 16 digit.!",
+                        "Tidak valid!",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else {
+            nik_field.setText(null);
+        }
+    }//GEN-LAST:event_nik_fieldKeyReleased
+
+    private boolean checkNIKLength() {
+        if (nik_field.getText().length() > 16) {
+            JOptionPane.showMessageDialog(null,
+                    "NIK tidak boleh lebih dari 16 angka.!",
+                    "Tidak Valid!",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    private void clearForm() {
+        nomor_antrian_field.setText(null);
+        nama_pasien_field.setText(null);
+        nik_field.setText(null);
+    }
 
     /**
      * @param args the command line arguments
@@ -294,8 +568,7 @@ public class pasien extends javax.swing.JFrame {
     private javax.swing.JLabel icon_home;
     private javax.swing.JLabel icon_signout;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel nama_pasien;
     private javax.swing.JTextField nama_pasien_field;
     private javax.swing.JLabel namapasien_grey1;
@@ -307,6 +580,9 @@ public class pasien extends javax.swing.JFrame {
     private javax.swing.JTextField nomor_antrian_field;
     private javax.swing.JPanel sidepanel;
     private javax.swing.JLabel simpan_bgdark;
+    private javax.swing.JLabel simpan_bgdark2;
     private javax.swing.JLabel simpan_btn;
+    private javax.swing.JLabel tambah_act;
+    private rojerusan.RSTableMetro tblPasien;
     // End of variables declaration//GEN-END:variables
 }
