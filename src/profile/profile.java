@@ -33,7 +33,7 @@ public class profile extends javax.swing.JFrame {
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setUndecorated(true);
-
+        
         initComponents();
         this.setSize(1920, 1080); // Atur ukuran sesuai kebutuhan
         this.setLocationRelativeTo(null); // Agar posisi center saat dibuka
@@ -52,13 +52,13 @@ public class profile extends javax.swing.JFrame {
             }
         });
     }
-
+    
     public static boolean updateUsernameInDatabase(String newUsername) {
         boolean success = false;
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-
+            
             String sql = "UPDATE users SET username = ? WHERE username = ?";
             stmt = DB.getConnection().prepareStatement(sql);
             stmt.setString(1, newUsername);
@@ -83,7 +83,7 @@ public class profile extends javax.swing.JFrame {
                 ex.printStackTrace();
             }
         }
-
+        
         return success;
     }
 
@@ -146,7 +146,12 @@ public class profile extends javax.swing.JFrame {
         password.setFont(new java.awt.Font("Trebuchet MS", 1, 32)); // NOI18N
         password.setForeground(new java.awt.Color(255, 255, 255));
         password.setText("Ganti Kata Sandi");
-        getContentPane().add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 468, -1, 50));
+        password.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                passwordMouseClicked(evt);
+            }
+        });
+        getContentPane().add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 418, 670, 180));
 
         icon_prof.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icon_profile.png"))); // NOI18N
         getContentPane().add(icon_prof, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 20, -1, -1));
@@ -192,7 +197,7 @@ public class profile extends javax.swing.JFrame {
         getContentPane().add(icon_signout, new org.netbeans.lib.awtextra.AbsoluteConstraints(1830, 970, -1, 50));
 
         icon_password1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icon_keywhite.png"))); // NOI18N
-        getContentPane().add(icon_password1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 450, 70, 90));
+        getContentPane().add(icon_password1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 420, 100, 180));
 
         icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icon.png"))); // NOI18N
         getContentPane().add(icon, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 230, -1, -1));
@@ -281,7 +286,7 @@ public class profile extends javax.swing.JFrame {
             } else {
                 JOptionPane.showMessageDialog(null, "Terjadi kesalahan saat memperbarui username.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-
+            
         } else {
             Border lineBorder = BorderFactory.createLineBorder(Color.WHITE, 2);
             Border emptyBorder = new EmptyBorder(0, 5, 0, 0);  // left padding 10px
@@ -296,6 +301,16 @@ public class profile extends javax.swing.JFrame {
     private void username_fieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_username_fieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_username_fieldActionPerformed
+
+    private void passwordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_passwordMouseClicked
+        try {
+            EditPassword editPassword = new EditPassword();
+            editPassword.setVisible(true);
+            System.out.println("Halooo");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }//GEN-LAST:event_passwordMouseClicked
 
     /**
      * @param args the command line arguments

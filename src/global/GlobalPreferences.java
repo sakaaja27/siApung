@@ -22,4 +22,11 @@ public class GlobalPreferences {
     public static String getUsername() {
         return prefs.get("username", "DefaultUsername");
     }
+    public static void setPassword(String password) {
+        prefs.put("password", password);
+    }
+
+    public static String getPassword() {
+        return prefs.get("password", "DefaultPassword");
+    }
 }

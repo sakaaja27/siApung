@@ -85,9 +85,12 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Ganti Kata Sandi"/>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="passwordMouseClicked"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="200" y="468" width="-1" height="50"/>
+          <AbsoluteConstraints x="200" y="418" width="670" height="180"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -212,7 +215,7 @@
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="100" y="450" width="70" height="90"/>
+          <AbsoluteConstraints x="100" y="420" width="100" height="180"/>
         </Constraint>
       </Constraints>
     </Component>
