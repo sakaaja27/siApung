@@ -4,7 +4,13 @@
  */
 package auth;
 
+import DB_koneksi.DB;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,9 +25,9 @@ public class register extends javax.swing.JFrame {
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setUndecorated(true);
-        
+
         initComponents();
-         // Mengatur ukuran jendela
+        // Mengatur ukuran jendela
         this.setSize(1920, 1080); // Atur ukuran sesuai kebutuhan
         this.setLocationRelativeTo(null); // Agar posisi center saat dibuka
     }
@@ -39,11 +45,17 @@ public class register extends javax.swing.JFrame {
         kemenkes_icon = new javax.swing.JLabel();
         icon_regis = new javax.swing.JLabel();
         registext = new javax.swing.JLabel();
-        LastNameField = new javax.swing.JTextField();
-        firstNameField1 = new javax.swing.JTextField();
-        UsernameField = new javax.swing.JTextField();
+        jCheckBox = new javax.swing.JCheckBox();
         PassField = new javax.swing.JPasswordField();
+        rectfive = new javax.swing.JLabel();
+        UsernameField = new javax.swing.JTextField();
+        rectfour = new javax.swing.JLabel();
         AddressField = new javax.swing.JTextField();
+        recttree = new javax.swing.JLabel();
+        LastNameField = new javax.swing.JTextField();
+        rectsecond = new javax.swing.JLabel();
+        firstNameField1 = new javax.swing.JTextField();
+        rectfirst = new javax.swing.JLabel();
         addresstext = new javax.swing.JLabel();
         passtext = new javax.swing.JLabel();
         lastnametext = new javax.swing.JLabel();
@@ -73,32 +85,30 @@ public class register extends javax.swing.JFrame {
         registext.setText("Register");
         jPanel1.add(registext, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 190, -1, 70));
 
-        LastNameField.setBackground(new java.awt.Color(255, 255, 255));
-        LastNameField.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        LastNameField.setForeground(new java.awt.Color(0, 0, 0));
-        LastNameField.setToolTipText("");
-        LastNameField.setBorder(null);
-        LastNameField.addActionListener(new java.awt.event.ActionListener() {
+        jCheckBox.setBackground(new java.awt.Color(255, 255, 255));
+        jCheckBox.setBorder(null);
+        jCheckBox.setContentAreaFilled(false);
+        jCheckBox.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/eye_icon.png"))); // NOI18N
+        jCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LastNameFieldActionPerformed(evt);
+                jCheckBoxActionPerformed(evt);
             }
         });
-        jPanel1.add(LastNameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 420, 990, 80));
+        jPanel1.add(jCheckBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(1520, 710, -1, 50));
 
-        firstNameField1.setBackground(new java.awt.Color(255, 255, 255));
-        firstNameField1.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        firstNameField1.setForeground(new java.awt.Color(0, 0, 0));
-        firstNameField1.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        firstNameField1.setText("Saka");
-        firstNameField1.setToolTipText("");
-        firstNameField1.setBorder(null);
-        firstNameField1.setMinimumSize(new java.awt.Dimension(1, 28));
-        firstNameField1.addActionListener(new java.awt.event.ActionListener() {
+        PassField.setBackground(new java.awt.Color(255, 255, 255));
+        PassField.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        PassField.setForeground(new java.awt.Color(0, 0, 0));
+        PassField.setBorder(null);
+        PassField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                firstNameField1ActionPerformed(evt);
+                PassFieldActionPerformed(evt);
             }
         });
-        jPanel1.add(firstNameField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 330, 990, 80));
+        jPanel1.add(PassField, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 710, 900, 60));
+
+        rectfive.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/rectangle_fullwhite.png"))); // NOI18N
+        jPanel1.add(rectfive, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 700, -1, -1));
 
         UsernameField.setBackground(new java.awt.Color(255, 255, 255));
         UsernameField.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
@@ -110,18 +120,10 @@ public class register extends javax.swing.JFrame {
                 UsernameFieldActionPerformed(evt);
             }
         });
-        jPanel1.add(UsernameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 600, 990, 80));
+        jPanel1.add(UsernameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 610, 960, 60));
 
-        PassField.setBackground(new java.awt.Color(255, 255, 255));
-        PassField.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        PassField.setForeground(new java.awt.Color(0, 0, 0));
-        PassField.setBorder(null);
-        PassField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PassFieldActionPerformed(evt);
-            }
-        });
-        jPanel1.add(PassField, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 700, 990, 80));
+        rectfour.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/rectangle_fullwhite.png"))); // NOI18N
+        jPanel1.add(rectfour, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 600, -1, -1));
 
         AddressField.setBackground(new java.awt.Color(255, 255, 255));
         AddressField.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
@@ -133,7 +135,42 @@ public class register extends javax.swing.JFrame {
                 AddressFieldActionPerformed(evt);
             }
         });
-        jPanel1.add(AddressField, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 510, 990, 80));
+        jPanel1.add(AddressField, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 520, 960, 60));
+
+        recttree.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/rectangle_fullwhite.png"))); // NOI18N
+        jPanel1.add(recttree, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 510, -1, -1));
+
+        LastNameField.setBackground(new java.awt.Color(255, 255, 255));
+        LastNameField.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        LastNameField.setForeground(new java.awt.Color(0, 0, 0));
+        LastNameField.setToolTipText("");
+        LastNameField.setBorder(null);
+        LastNameField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LastNameFieldActionPerformed(evt);
+            }
+        });
+        jPanel1.add(LastNameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 430, 960, 60));
+
+        rectsecond.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/rectangle_fullwhite.png"))); // NOI18N
+        jPanel1.add(rectsecond, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 420, -1, -1));
+
+        firstNameField1.setBackground(new java.awt.Color(255, 255, 255));
+        firstNameField1.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        firstNameField1.setForeground(new java.awt.Color(0, 0, 0));
+        firstNameField1.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        firstNameField1.setToolTipText("");
+        firstNameField1.setBorder(null);
+        firstNameField1.setMinimumSize(new java.awt.Dimension(1, 28));
+        firstNameField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                firstNameField1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(firstNameField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 340, 960, 60));
+
+        rectfirst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/rectangle_fullwhite.png"))); // NOI18N
+        jPanel1.add(rectfirst, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 330, -1, -1));
 
         addresstext.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
         addresstext.setForeground(new java.awt.Color(255, 255, 255));
@@ -195,6 +232,11 @@ public class register extends javax.swing.JFrame {
         register.setForeground(new java.awt.Color(255, 255, 255));
         register.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         register.setText("Register");
+        register.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                registerMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -265,6 +307,101 @@ public class register extends javax.swing.JFrame {
         front.setVisible(true);
     }//GEN-LAST:event_kembaliMouseClicked
 
+    private void jCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxActionPerformed
+        // untuk melihat password
+        if (jCheckBox.isSelected()) {
+            PassField.setEchoChar((char) 0);
+        } else {
+            PassField.setEchoChar('*');
+        }
+    }//GEN-LAST:event_jCheckBoxActionPerformed
+
+    private void registerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registerMouseClicked
+        String firstName = firstNameField1.getText().trim();
+        String lastName = LastNameField.getText().trim();
+        String address = AddressField.getText().trim();
+        String username = UsernameField.getText().trim();
+        String password = String.valueOf(PassField.getPassword()).trim();
+
+        
+        if (firstName.isEmpty() || lastName.isEmpty() || address.isEmpty() || username.isEmpty() || password.isEmpty()) {
+            showMessage("Harap isi semua field", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+       
+        if (isUsernameTaken(username)) {
+            showMessage("Username sudah digunakan, harap ganti username lain", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        
+        String hashedPassword = hashPassword(password);
+
+       
+        if (registerUser(firstName, lastName, address, username, hashedPassword)) {
+            showMessage("Register berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+            openLoginForm();
+        }
+    }//GEN-LAST:event_registerMouseClicked
+
+    private void showMessage(String message, String title, int messageType) {
+        JOptionPane.showMessageDialog(null, message, title, messageType);
+    }
+    
+    private boolean isUsernameTaken(String username) {
+        String query = "SELECT COUNT(*) FROM `users` WHERE `username` = ?";
+        try (PreparedStatement ps = DB.getConnection().prepareStatement(query)) {
+            ps.setString(1, username);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; 
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false; 
+    }
+
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(password.getBytes());
+            byte[] byteData = md.digest();
+
+            StringBuilder sb = new StringBuilder();
+            for (byte b : byteData) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null; 
+        }
+    }
+
+    private boolean registerUser(String firstName, String lastName, String address, String username, String password) {
+        String query = "INSERT INTO `users` (`first_name`, `last_name`, `address`, `username`, `password`) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = DB.getConnection().prepareStatement(query)) {
+            ps.setString(1, firstName);
+            ps.setString(2, lastName);
+            ps.setString(3, address);
+            ps.setString(4, username);
+            ps.setString(5, password);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void openLoginForm() {
+        loginauth loginForm = new loginauth(); 
+        loginForm.setVisible(true);
+        this.dispose();
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -310,6 +447,7 @@ public class register extends javax.swing.JFrame {
     private javax.swing.JTextField firstNameField1;
     private javax.swing.JLabel firstnametext;
     private javax.swing.JLabel icon_regis;
+    private javax.swing.JCheckBox jCheckBox;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -318,6 +456,11 @@ public class register extends javax.swing.JFrame {
     private javax.swing.JLabel lastnametext;
     private javax.swing.JLabel passtext;
     private javax.swing.JLabel rectangle;
+    private javax.swing.JLabel rectfirst;
+    private javax.swing.JLabel rectfive;
+    private javax.swing.JLabel rectfour;
+    private javax.swing.JLabel rectsecond;
+    private javax.swing.JLabel recttree;
     private javax.swing.JLabel register;
     private javax.swing.JLabel registext;
     private javax.swing.JLabel usernametext;

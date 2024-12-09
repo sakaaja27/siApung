@@ -4,14 +4,23 @@
  */
 package auth;
 
+import DB_koneksi.DB;
 import dashboard.dashboard;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author sakab
  */
 public class loginauth extends javax.swing.JFrame {
+
+    public static String idUser;
+    public static String namaUser;
 
     /**
      * Creates new form loginauth
@@ -20,9 +29,9 @@ public class loginauth extends javax.swing.JFrame {
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setUndecorated(true);
-        
+
         initComponents();
-         // Mengatur ukuran jendela
+        // Mengatur ukuran jendela
         this.setSize(1920, 1080); // Atur ukuran sesuai kebutuhan
         this.setLocationRelativeTo(null); // Agar posisi center saat dibuka
     }
@@ -79,7 +88,7 @@ public class loginauth extends javax.swing.JFrame {
         jPanel1.add(logintext, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 170, -1, 60));
 
         userField1.setBackground(new java.awt.Color(255, 255, 255));
-        userField1.setFont(new java.awt.Font("Trebuchet MS", 1, 24)); // NOI18N
+        userField1.setFont(new java.awt.Font("Trebuchet MS", 0, 24)); // NOI18N
         userField1.setForeground(new java.awt.Color(0, 0, 0));
         userField1.setBorder(null);
         userField1.addActionListener(new java.awt.event.ActionListener() {
@@ -90,7 +99,7 @@ public class loginauth extends javax.swing.JFrame {
         jPanel1.add(userField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1074, 320, 590, 60));
 
         PassField.setBackground(new java.awt.Color(255, 255, 255));
-        PassField.setFont(new java.awt.Font("Trebuchet MS", 1, 24)); // NOI18N
+        PassField.setFont(new java.awt.Font("Trebuchet MS", 0, 24)); // NOI18N
         PassField.setForeground(new java.awt.Color(0, 0, 0));
         PassField.setBorder(null);
         PassField.addActionListener(new java.awt.event.ActionListener() {
@@ -160,15 +169,15 @@ public class loginauth extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(registerbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 680, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(registerbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 670, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(registerbtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
         );
 
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 790, -1, 90));
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 790, 680, 90));
 
         usertext.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
         usertext.setForeground(new java.awt.Color(255, 255, 255));
@@ -210,17 +219,68 @@ public class loginauth extends javax.swing.JFrame {
     private void registerbtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registerbtnMouseClicked
         // TODO add your handling code here:
         register regis = new register();
-        regis.setVisible(true); 
-        this.dispose(); 
+        regis.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_registerbtnMouseClicked
 
     private void loginbuttonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginbuttonMouseClicked
-        // TODO add your handling code here:
-        dashboard dash = new dashboard();
-        dash.setVisible(true); 
-            
-        this.dispose(); 
+        // Ambil username dan password dari field
+        String username = userField1.getText().trim();
+        String password = String.valueOf(PassField.getPassword()).trim();
+
+        // Cek apakah field kosong
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Field tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return; 
+        }
+
+        
+        String hashedPassword = hashPassword(password);
+
+        
+        String query = "SELECT * FROM `users` WHERE `username` = ? AND `password` = ?";
+
+        try (PreparedStatement ps = DB.getConnection().prepareStatement(query)) {
+            ps.setString(1, username);
+            ps.setString(2, hashedPassword); 
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    // Jika login berhasil
+                    idUser = rs.getString("id");
+                    namaUser = rs.getString("username");
+                    dashboard from_dashboard = new dashboard();
+                    from_dashboard.setVisible(true);
+                    this.dispose();
+                } else {
+                    // Jika username atau password salah
+                    JOptionPane.showMessageDialog(null, "Username dan Password salah", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+                    userField1.setText(null);
+                    PassField.setText(null);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); 
+        }
     }//GEN-LAST:event_loginbuttonMouseClicked
+
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(password.getBytes());
+            byte[] byteData = md.digest();
+
+            
+            StringBuilder sb = new StringBuilder();
+            for (byte b : byteData) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null; 
+        }
+    }
 
     /**
      * @param args the command line arguments

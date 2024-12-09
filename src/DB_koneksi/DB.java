@@ -11,7 +11,7 @@ public class DB {
     public static Connection getConnection() throws SQLException {
         if (DB_koneksi == null) {
 
-            DB_koneksi = DriverManager.getConnection("jdbc:mysql://localhost:3306/siapung", "root", "");
+            DB_koneksi = DriverManager.getConnection("jdbc:mysql://localhost:3306/siapung?useSSL=false", "root", "");
         }
         return DB_koneksi;
     }
