@@ -4,9 +4,20 @@
  */
 package profile;
 
+import DB_koneksi.DB;
 import auth.splash;
 import dashboard.dashboard;
+import global.GlobalPreferences;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import pasien.pasien;
 
 /**
@@ -22,11 +33,58 @@ public class profile extends javax.swing.JFrame {
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setUndecorated(true);
-        
+
         initComponents();
-         // Mengatur ukuran jendela
         this.setSize(1920, 1080); // Atur ukuran sesuai kebutuhan
         this.setLocationRelativeTo(null); // Agar posisi center saat dibuka
+        username_field.setText(GlobalPreferences.getUsername());
+        username_field.addActionListener(e -> {
+            isUsernameEdit = false;
+            username_field.setEditable(false);
+            username_field.setBorder(null);
+            username_field.requestFocus(false);
+            boolean updateSuccess = updateUsernameInDatabase(username_field.getText());
+            if (updateSuccess) {
+                JOptionPane.showMessageDialog(null, "Username berhasil diperbarui!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                GlobalPreferences.setUsername(username_field.getText());
+            } else {
+                JOptionPane.showMessageDialog(null, "Terjadi kesalahan saat memperbarui username.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
+
+    public static boolean updateUsernameInDatabase(String newUsername) {
+        boolean success = false;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+
+            String sql = "UPDATE users SET username = ? WHERE username = ?";
+            stmt = DB.getConnection().prepareStatement(sql);
+            stmt.setString(1, newUsername);
+            stmt.setString(2, GlobalPreferences.getUsername());
+            // Execute the update
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                success = true; // Update was successful
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return success;
     }
 
     /**
@@ -40,8 +98,8 @@ public class profile extends javax.swing.JFrame {
 
         myaccount_txt = new javax.swing.JLabel();
         daftar_pasien = new javax.swing.JLabel();
+        edit_username = new javax.swing.JLabel();
         password = new javax.swing.JLabel();
-        nama_profile = new javax.swing.JLabel();
         icon_prof = new javax.swing.JLabel();
         icon_hum1 = new javax.swing.JLabel();
         icon_hum = new javax.swing.JLabel();
@@ -53,6 +111,7 @@ public class profile extends javax.swing.JFrame {
         icon_password1 = new javax.swing.JLabel();
         icon = new javax.swing.JLabel();
         icon_pasien = new javax.swing.JLabel();
+        username_field = new javax.swing.JTextField();
         icon_people = new javax.swing.JLabel();
         rectangle_profile = new javax.swing.JLabel();
         navTop = new javax.swing.JPanel();
@@ -76,15 +135,18 @@ public class profile extends javax.swing.JFrame {
         });
         getContentPane().add(daftar_pasien, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 600, 670, 150));
 
+        edit_username.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icon_humwhite.png"))); // NOI18N
+        edit_username.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                edit_usernameMouseClicked(evt);
+            }
+        });
+        getContentPane().add(edit_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 290, 70, 100));
+
         password.setFont(new java.awt.Font("Trebuchet MS", 1, 32)); // NOI18N
         password.setForeground(new java.awt.Color(255, 255, 255));
         password.setText("Ganti Kata Sandi");
         getContentPane().add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 468, -1, 50));
-
-        nama_profile.setFont(new java.awt.Font("Trebuchet MS", 1, 32)); // NOI18N
-        nama_profile.setForeground(new java.awt.Color(255, 255, 255));
-        nama_profile.setText("Username");
-        getContentPane().add(nama_profile, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 310, -1, -1));
 
         icon_prof.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icon_profile.png"))); // NOI18N
         getContentPane().add(icon_prof, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 20, -1, -1));
@@ -98,7 +160,7 @@ public class profile extends javax.swing.JFrame {
         getContentPane().add(icon_hum1, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 610, 80, 140));
 
         icon_hum.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icon_humwhite.png"))); // NOI18N
-        getContentPane().add(icon_hum, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 440, 70, 100));
+        getContentPane().add(icon_hum, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 450, 70, 100));
 
         icon_home.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icon_home.png"))); // NOI18N
         icon_home.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -143,10 +205,24 @@ public class profile extends javax.swing.JFrame {
         });
         getContentPane().add(icon_pasien, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 600, 90, 150));
 
+        username_field.setEditable(false);
+        username_field.setBackground(new java.awt.Color(255, 111, 113));
+        username_field.setFont(new java.awt.Font("Trebuchet MS", 1, 32)); // NOI18N
+        username_field.setForeground(new java.awt.Color(255, 255, 255));
+        username_field.setText("Username");
+        username_field.setBorder(null);
+        username_field.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                username_fieldActionPerformed(evt);
+            }
+        });
+        getContentPane().add(username_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 290, 660, 100));
+
         icon_people.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icon_userwhie.png"))); // NOI18N
         getContentPane().add(icon_people, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 287, 70, 90));
 
         rectangle_profile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/rectangle_profile.png"))); // NOI18N
+        rectangle_profile.setText("Username");
         getContentPane().add(rectangle_profile, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 260, 910, -1));
 
         navTop.setBackground(new java.awt.Color(217, 217, 217));
@@ -163,8 +239,8 @@ public class profile extends javax.swing.JFrame {
     private void icon_homeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_icon_homeMouseClicked
         // TODO add your handling code here:
         dashboard dash = new dashboard();
-        dash.setVisible(true); 
-        this.dispose(); 
+        dash.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_icon_homeMouseClicked
 
     private void icon_signoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_icon_signoutMouseClicked
@@ -176,21 +252,50 @@ public class profile extends javax.swing.JFrame {
 
     private void daftar_pasienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_daftar_pasienMouseClicked
         pasien daftarpasien = new pasien();
-        daftarpasien.setVisible(true); 
-        this.dispose(); 
+        daftarpasien.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_daftar_pasienMouseClicked
 
     private void icon_pasienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_icon_pasienMouseClicked
-         pasien daftarpasien = new pasien();
-        daftarpasien.setVisible(true); 
-        this.dispose(); 
+        pasien daftarpasien = new pasien();
+        daftarpasien.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_icon_pasienMouseClicked
 
     private void icon_hum1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_icon_hum1MouseClicked
-         pasien daftarpasien = new pasien();
-        daftarpasien.setVisible(true); 
-        this.dispose(); 
+        pasien daftarpasien = new pasien();
+        daftarpasien.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_icon_hum1MouseClicked
+    boolean isUsernameEdit = false;
+    private void edit_usernameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_edit_usernameMouseClicked
+        if (isUsernameEdit) {
+            isUsernameEdit = false;
+            username_field.setEditable(false);
+            username_field.setBorder(null);
+            username_field.requestFocus(false);
+            boolean updateSuccess = updateUsernameInDatabase(username_field.getText());
+            if (updateSuccess) {
+                JOptionPane.showMessageDialog(null, "Username berhasil diperbarui!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                GlobalPreferences.setUsername(username_field.getText());
+            } else {
+                JOptionPane.showMessageDialog(null, "Terjadi kesalahan saat memperbarui username.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } else {
+            Border lineBorder = BorderFactory.createLineBorder(Color.WHITE, 2);
+            Border emptyBorder = new EmptyBorder(0, 5, 0, 0);  // left padding 10px
+            Border compoundBorder = BorderFactory.createCompoundBorder(lineBorder, emptyBorder);
+            username_field.setEditable(true);
+            username_field.setBorder(compoundBorder);
+            username_field.requestFocusInWindow();
+            isUsernameEdit = true;
+        }
+    }//GEN-LAST:event_edit_usernameMouseClicked
+
+    private void username_fieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_username_fieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_username_fieldActionPerformed
 
     /**
      * @param args the command line arguments
@@ -229,6 +334,7 @@ public class profile extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel daftar_pasien;
+    private javax.swing.JLabel edit_username;
     private javax.swing.JLabel icon;
     private javax.swing.JLabel icon_home;
     private javax.swing.JLabel icon_hum;
@@ -243,9 +349,9 @@ public class profile extends javax.swing.JFrame {
     private javax.swing.JLabel judul_txt;
     private javax.swing.JLabel judul_txt1;
     private javax.swing.JLabel myaccount_txt;
-    private javax.swing.JLabel nama_profile;
     private javax.swing.JPanel navTop;
     private javax.swing.JLabel password;
     private javax.swing.JLabel rectangle_profile;
+    private javax.swing.JTextField username_field;
     // End of variables declaration//GEN-END:variables
 }

@@ -6,6 +6,7 @@ package auth;
 
 import DB_koneksi.DB;
 import dashboard.dashboard;
+import global.GlobalPreferences;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
@@ -18,7 +19,7 @@ import javax.swing.JOptionPane;
  * @author sakab
  */
 public class loginauth extends javax.swing.JFrame {
-
+    
     public static String idUser;
     public static String namaUser;
 
@@ -29,7 +30,7 @@ public class loginauth extends javax.swing.JFrame {
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setUndecorated(true);
-
+        
         initComponents();
         // Mengatur ukuran jendela
         this.setSize(1920, 1080); // Atur ukuran sesuai kebutuhan
@@ -231,19 +232,17 @@ public class loginauth extends javax.swing.JFrame {
         // Cek apakah field kosong
         if (username.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Field tidak boleh kosong", "Peringatan", JOptionPane.WARNING_MESSAGE);
-            return; 
+            return;            
         }
-
         
         String hashedPassword = hashPassword(password);
-
         
         String query = "SELECT * FROM `users` WHERE `username` = ? AND `password` = ?";
-
+        
         try (PreparedStatement ps = DB.getConnection().prepareStatement(query)) {
             ps.setString(1, username);
-            ps.setString(2, hashedPassword); 
-
+            ps.setString(2, hashedPassword);            
+            
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     // Jika login berhasil
@@ -251,6 +250,8 @@ public class loginauth extends javax.swing.JFrame {
                     namaUser = rs.getString("username");
                     dashboard from_dashboard = new dashboard();
                     from_dashboard.setVisible(true);
+//                    GlobalVariables.saveUsername(username);
+                    GlobalPreferences.setUsername(username);
                     this.dispose();
                 } else {
                     // Jika username atau password salah
@@ -260,16 +261,15 @@ public class loginauth extends javax.swing.JFrame {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace(); 
+            e.printStackTrace();            
         }
     }//GEN-LAST:event_loginbuttonMouseClicked
-
+    
     private String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(password.getBytes());
             byte[] byteData = md.digest();
-
             
             StringBuilder sb = new StringBuilder();
             for (byte b : byteData) {
@@ -278,7 +278,7 @@ public class loginauth extends javax.swing.JFrame {
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return null; 
+            return null;            
         }
     }
 

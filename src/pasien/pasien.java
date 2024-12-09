@@ -89,6 +89,10 @@ public class pasien extends javax.swing.JFrame {
                     }
                 }
             });
+            if (lastNoAntrian == "") {
+                nomor_antrian_field.setText("A-1");
+                return;
+            }
             String[] splittedNoAntrian = lastNoAntrian.split("-");
             System.out.println();
             String incrementedNoAntrian = splittedNoAntrian[0] + "-" + String.valueOf(Integer.parseInt(splittedNoAntrian[1]) + 1);
