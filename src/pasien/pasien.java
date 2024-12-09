@@ -129,6 +129,8 @@ public class pasien extends javax.swing.JFrame {
         hps_btn = new javax.swing.JLabel();
         delete_bgdark = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblPasien = new rojerusan.RSTableMetro();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -280,6 +282,42 @@ public class pasien extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(1920, 100));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tblPasien.setBackground(new java.awt.Color(250, 154, 156));
+        tblPasien.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "No. Antrian", "Nama Pasien", "Nik"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblPasien.setColorBackgoundHead(new java.awt.Color(250, 154, 156));
+        tblPasien.setColorFilasBackgound2(new java.awt.Color(225, 232, 237));
+        tblPasien.setColorFilasForeground1(new java.awt.Color(0, 0, 0));
+        tblPasien.setColorFilasForeground2(new java.awt.Color(0, 0, 0));
+        tblPasien.setColorForegroundHead(new java.awt.Color(0, 0, 0));
+        tblPasien.setFuenteFilas(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        tblPasien.setFuenteFilasSelect(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        tblPasien.setFuenteHead(new java.awt.Font("Nirmala UI", 1, 15)); // NOI18N
+        tblPasien.setRowHeight(40);
+        jScrollPane2.setViewportView(tblPasien);
+        if (tblPasien.getColumnModel().getColumnCount() > 0) {
+            tblPasien.getColumnModel().getColumn(0).setResizable(false);
+            tblPasien.getColumnModel().getColumn(1).setResizable(false);
+            tblPasien.getColumnModel().getColumn(2).setResizable(false);
+        }
+
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 90, 1320, 910));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 1080));
 
         pack();
@@ -552,6 +590,7 @@ public class pasien extends javax.swing.JFrame {
     private javax.swing.JLabel icon_home;
     private javax.swing.JLabel icon_signout;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel nama_pasien;
     private javax.swing.JTextField nama_pasien_field;
     private javax.swing.JLabel namapasien_grey1;
@@ -566,5 +605,6 @@ public class pasien extends javax.swing.JFrame {
     private javax.swing.JLabel simpan_bgdark2;
     private javax.swing.JLabel simpan_btn;
     private javax.swing.JLabel tambah_act;
+    private rojerusan.RSTableMetro tblPasien;
     // End of variables declaration//GEN-END:variables
 }
